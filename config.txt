@@ -1,0 +1,275 @@
+# vim: set et fenc=utf-8 ft=conf sts=4 sw=4 ts=8 tw=80 :
+#
+# Author: microfracture / https://linuxious.com
+# Updated: 2016-08-22
+
+
+# =============================================================================
+# Initial setup
+# =============================================================================
+
+# Set workspace icons
+set $WS1 ""
+set $WS2 ""
+set $WS3 ""
+set $WS4 ""
+set $WS5 ""
+set $WS6 ""
+set $WS7 ""
+
+# Assign miscellaneous settings (the last four require i3-gaps)
+font pango:Terminus 10
+hide_edge_borders both
+
+gaps inner 8
+gaps outer 0
+smart_borders on
+smart_gaps on
+
+# =============================================================================
+# Assign colors
+# =============================================================================
+
+#set $bg           #204A87
+#set $bg-urgent    #3465A4
+
+set $bg            #8b2f45
+set $bg-inactive   #a0a0a0
+set $bg-urgent     #b5294a
+set $text          #eeeeec
+set $text-inactive #babdb6
+
+set $bar           #222222
+set $seperator     #444444
+set $statusline    #888A85
+
+#                       border        background   text           indicator
+client.focused          $bg           $bg          $text          $bar
+client.unfocused        $bg-inactive  $bg-inactive $text-inactive $bar
+client.focused_inactive $bg-inactive  $bg-inactive $text-inactive $bar
+client.urgent           $bg-urgent    $bg-urgent   $text          $bar
+
+
+# =============================================================================
+# Configure bar
+# =============================================================================
+
+bar {
+    font           pango:Terminus, FontAwesome 10
+    position       top
+    status_command i3blocks
+    tray_output    DVI-I-2
+
+    colors {
+        background              $bar
+        separator               $seperator
+        statusline              $statusline
+        active_workspace        $bg $bg $text
+        focused_workspace       $bg-urgent $bg $text
+        inactive_workspace      $seperator $seperator $text
+        urgent_workspace        $bg-urgent $bg-urgent $text
+    }
+}
+
+
+# =============================================================================
+# Assign window behavior
+# =============================================================================
+
+# Assign windows to their respective workspaces.
+assign [class="Atom|Brackets"] $WS6
+assign [class="Chromium|Firefox"] $WS1
+assign [class="Gimp"] $WS7
+assign [class="Keepassx"] $WS7
+assign [class="mpv|Vlc"] $WS4
+assign [class="Mumble"] $WS2
+assign [class="Steam|^net-minecraft-bootstrap-Bootstrap"] $WS5
+assign [class="Thunderbird"] $WS2
+
+# Assign floating windows.
+for_window [class="feh|Keepassx|mpv|Mumble|Pavucontrol|Steam"] floating enable
+for_window [title="^Minecraft .*"] floating enable
+for_window [title="Preferences$"] floating enable
+for_window [title="Steam - Update News"] kill
+for_window [window_role="^conversation$"] floating enable
+for_window [window_role="messages"] floating enable
+for_window [window_role="pop-up"] floating enable
+for_window [window_role="task_dialog"] floating enable
+
+# Remove the titlebar.
+for_window [class="Chromium|Firefox"] border pixel 1
+for_window [class="mpv|URxvt"] border pixel 1
+
+
+# =============================================================================
+# Keybinds (set to Dvorak)
+# =============================================================================
+
+# Set modifier to the 'Windows' key.
+set $mod Mod4
+
+# Application launcher.
+bindsym $mod+e exec --no-startup-id exec rofi -show run -font "Terminus 10" -lines 6 -i -separator-style solid -opacity "90"
+#bindsym $mod+e exec --no-startup-id ~/.bin/dmenu-frecency
+
+# Alt+Tab window switching.
+bindsym Mod1+Tab exec --no-startup-id exec rofi -show window -font "Terminus 10" -lines 6 -i -separator-style solid -opacity "90"
+#bindsym Mod1+Tab exec --no-startup-id ~/.bin/quickswitch.py -d "dmenu -b -i -l 20 -nb \#285577 -nf \#FFFFFF -sb \#B9D5EF -sf \#3E719F"
+
+# Lock screen using the i3lock-blur script.
+# (https://github.com/petvas/i3lock-blur)
+bindsym Control+$mod+l exec ~/.bin/lock.sh
+
+# Take a screenshot (Print Screen key).
+bindsym --release Print exec --no-startup-id scrot "%Y-%m-%d_$(whoami).png' -t 10% -e 'feh -. $f"
+
+# Use Mouse+$mod to drag floating windows to their wanted position.
+floating_modifier $mod
+
+# Start a terminal.
+bindsym $mod+Return exec urxvtc
+
+# Kill focused window.
+bindsym $mod+Shift+q kill
+
+# Change focus.
+bindsym $mod+h focus left
+bindsym $mod+t focus down
+bindsym $mod+n focus up
+bindsym $mod+s focus right
+
+# Alternatively, you can use the cursor keys:
+bindsym $mod+Left focus left
+bindsym $mod+Down focus down
+bindsym $mod+Up focus up
+bindsym $mod+Right focus right
+
+# Move focused window.
+bindsym $mod+Shift+h move left
+bindsym $mod+Shift+t move down
+bindsym $mod+Shift+n move up
+bindsym $mod+Shift+s move right
+
+# Alternatively, you can use the cursor keys:
+bindsym $mod+Shift+Left move left
+bindsym $mod+Shift+Down move down
+bindsym $mod+Shift+Up move up
+bindsym $mod+Shift+Right move right
+
+# Split in horizontal orientation.
+bindsym $mod+d split h
+
+# Split in vertical orientation.
+bindsym $mod+k split v
+
+# Enter fullscreen mode for the focused container.
+bindsym $mod+u fullscreen
+
+# Change container layout (stacked, tabbed, toggle split).
+bindsym $mod+o layout stacking
+bindsym $mod+comma layout tabbed
+bindsym $mod+period layout toggle split
+
+# Toggle tiling / floating.
+bindsym $mod+Shift+space floating toggle
+
+# Change focus between tiling / floating windows.
+bindsym $mod+space focus mode_toggle
+
+# Focus the parent container.
+bindsym $mod+a focus parent
+
+# Switch to workspace.
+bindsym $mod+1 workspace $WS1
+bindsym $mod+2 workspace $WS2
+bindsym $mod+3 workspace $WS3
+bindsym $mod+4 workspace $WS4
+bindsym $mod+5 workspace $WS5
+bindsym $mod+6 workspace $WS6
+bindsym $mod+7 workspace $WS7
+
+# Move focused container to workspace.
+bindsym $mod+Shift+1 move container to workspace $WS1
+bindsym $mod+Shift+2 move container to workspace $WS2
+bindsym $mod+Shift+3 move container to workspace $WS3
+bindsym $mod+Shift+4 move container to workspace $WS4
+bindsym $mod+Shift+5 move container to workspace $WS5
+bindsym $mod+Shift+6 move container to workspace $WS6
+bindsym $mod+Shift+7 move container to workspace $WS7
+
+# Reload the configuration file.
+bindsym $mod+Shift+comma reload
+
+# Restart i3 inplace (preserves your layout/session, can be used to upgrade i3).
+bindsym $mod+Shift+p restart
+
+# Exit i3 (logs you out of your X session).
+bindsym $mod+Shift+period exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -b 'Yes, exit i3' 'i3-msg exit'"
+
+# resize window (you can also use the mouse for that)
+mode "resize" {
+# These bindings trigger as soon as you enter the resize mode.
+
+# Pressing left will shrink the window’s width.
+# Pressing right will grow the window’s width.
+# Pressing up will shrink the window’s height.
+# Pressing down will grow the window’s height.
+bindsym h resize shrink width 10 px or 10 ppt
+bindsym t resize grow height 10 px or 10 ppt
+bindsym n resize shrink height 10 px or 10 ppt
+bindsym s resize grow width 10 px or 10 ppt
+
+# Same bindings, but for the arrow keys.
+bindsym Left resize shrink width 10 px or 10 ppt
+bindsym Down resize grow height 10 px or 10 ppt
+bindsym Up resize shrink height 10 px or 10 ppt
+bindsym Right resize grow width 10 px or 10 ppt
+
+# Back to normal: Enter or Escape.
+bindsym Return mode "default"
+bindsym Escape mode "default"
+}
+bindsym $mod+p mode "resize"
+
+# An excellent alternative to the default i3 exit keybind.
+# From https://wiki.archlinux.org/index.php/i3#Shutdown.2C_reboot.2C_lock_screen
+set $Locker exec ~/.bin/lock.sh && sleep 1
+
+set $mode_system System (l) lock, (e) logout, (s) suspend, (h) hibernate, (r) reboot, (Shift+s) shutdown
+mode "$mode_system" {
+    bindsym l exec --no-startup-id $Locker, mode "default"
+    bindsym e exec --no-startup-id i3-msg exit, mode "default"
+    bindsym s exec --no-startup-id $Locker && systemctl suspend, mode "default"
+    bindsym h exec --no-startup-id $Locker && systemctl hibernate, mode "default"
+    bindsym r exec --no-startup-id systemctl reboot, mode "default"
+    bindsym Shift+s exec --no-startup-id systemctl poweroff -i, mode "default"
+
+    # Back to normal: Enter or Escape
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
+}
+
+bindsym $mod+Pause mode "$mode_system"
+
+
+# =============================================================================
+# Launch initial applications
+# =============================================================================
+
+# Enable compositing.
+exec --no-startup-id compton -bc &
+
+# Set wallpaper.
+exec --no-startup-id nitrogen --restore &
+
+# Daemonize the rbvt-unicode terminal emulator.
+exec --no-startup-id urxvtd -q -f -o &
+
+# UDisks front-end for managing removable media.
+#exec --no-startup-id udiskie -ans &
+
+# Launch the notification daemon.
+exec --no-startup-id dunst &
+
+# Adjust monitor color temperature based on time.
+exec --no-startup-id redshift-gtk &
