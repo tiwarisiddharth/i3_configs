@@ -14,3 +14,7 @@ prefer to use these apps
     dmenu, 
     rofi, 
     xlunch, 
+    i3status,
+    polybar,
+    tint2,
+    
