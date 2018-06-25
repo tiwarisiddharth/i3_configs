@@ -16,5 +16,5 @@ prefer to use these apps
     xlunch, 
     i3status,
     polybar,
-    tint2,
+    tint2
     
