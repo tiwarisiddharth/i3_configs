@@ -14,12 +14,30 @@ set $alt Mod1
 set $psst --no-startup-id
 set $i3 /root/.config/i3
 
+
 # Font for window titles. Will also be used by the bar unless a different font
 # is used in the bar {} block below.
-font pango:monospace 0
+font pango:Andale Mono 8
+
+#font pango:monospace 10
 #Polybar
 #exec $psst polybar main_bar
 exec $psst nitrogen --set-zoom-fill --random
+
+
+
+#exec --no-startup-id udiskie -ans &
+#exec --no-startup-id dunst &
+#exec_always --no-startup-id timedatectl set-ntp 1 &
+#exec --no-startup-id redshift &
+#exec --no-startup-id volumeicon &
+#exec --no-startup-id nm-applet &
+#exec --no-startup-id conky &
+#exec_always --no-startup-id /root/.config/i3/oneko.sh &
+#exec --no-startup-id bash /root/.fehbg &
+#exec_always --no-startup-id variety &
+#exec --no-startup-id compton &
+
 
 #exec --no-startup-id dunst
 #volume button
@@ -46,31 +64,23 @@ bindsym $mod+m  workspace prev
 bindsym $mod+Tab    workspace back_and_forth
 workspace_auto_back_and_forth yes
 
-
-# This font is widely installed, provides lots of unicode glyphs, right-to-left
-# text rendering and scalability on retina/hidpi displays (thanks to pango).
-#font pango:DejaVu Sans Mono 8
 # 🐧
-# Before i3 v4.8, we used to recommend this one as the default:
-# font -misc-fixed-medium-r-normal--13-120-75-75-C-70-iso10646-1
-# The font above is very space-efficient, that is, it looks good, sharp and
-# clear in small sizes. However, its unicode glyph coverage is limited, the old
-# X core fonts rendering does not support right-to-left and this being a bitmap
-# font, it doesn’t scale on retina/hidpi displays.
-
-# Pulse Audio controls
-bindsym XF86AudioRaiseVolume exec --no-startup-id amixer sset Master 2+
-bindsym XF86AudioLowerVolume exec --no-startup-id amixer sset Master 2-
-bindsym XF86AudioMute exec --no-startup-id amixer sset Master toggle
 
 
-# Pulse Audio controls
-#bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume 0 +5%
- #increase sound volume
-#bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume 0 -5%
-#decrease sound volume
-#bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute 0 toggle
-# mute sound
+##Pulse Audio controls
+#bindsym XF86AudioRaiseVolume exec --no-startup-id amixer sset Master 2+
+#bindsym XF86AudioLowerVolume exec --no-startup-id amixer sset Master 2-
+#bindsym XF86AudioMute exec --no-startup-id amixer sset Master toggle
+
+##Pulse Audio controls
+#bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume 0 +5% #increase sound volume
+#bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume 0 -5% #decrease sound volume
+#bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute 0 toggle # mute sound
+
+#bindsym XF86AudioMute exec "pamixer --toggle-mute && killall -USR1 i3status"
+#bindsym XF86AudioRaiseVolume exec "pamixer --increase 5 --allow-boost && killall -USR1 i3status"
+#bindsym XF86AudioLowerVolume exec "pamixer --decrease 5 --allow-boost && killall -USR1 i3status"
+
 #Execute tilda
 #bindsym Ctrl+Shift+l exec --no-startup-id tilda
 
@@ -81,27 +91,60 @@ bindsym XF86MonBrightnessDown exec xbacklight -dec 9
 # decrease screen brightness
 
 
+# This font is widely installed, provides lots of unicode glyphs, right-to-left
+# text rendering and scalability on retina/hidpi displays (thanks to pango).
+#font pango:DejaVu Sans Mono 8
+
+# The combination of xss-lock, nm-applet and pactl is a popular choice, so
+# they are included here as an example. Modify as you see fit.
+
+# xss-lock grabs a logind suspend inhibit lock and will use i3lock to lock the
+# screen before suspend. Use loginctl lock-session to lock your screen.
+exec --no-startup-id xss-lock --transfer-sleep-lock -- i3lock --nofork
+
+# NetworkManager is the most popular way to manage wireless networks on Linux,
+# and nm-applet is a desktop environment-independent system tray GUI for it.
+exec --no-startup-id nm-applet
+
+# Use pactl to adjust volume in PulseAudio.
+set $refresh_i3status killall -SIGUSR1 i3status
+bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +10% && $refresh_i3status
+bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -10% && $refresh_i3status
+bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute @DEFAULT_SINK@ toggle && $refresh_i3status
+bindsym XF86AudioMicMute exec --no-startup-id pactl set-source-mute @DEFAULT_SOURCE@ toggle && $refresh_i3status
+
 # Use Mouse+$mod to drag floating windows to their wanted position
 floating_modifier $mod
 
 # start a terminal
-bindsym $mod+Return exec lxterminal
-
+bindsym $mod+Return exec i3-sensible-terminal
 
 # kill focused window
 bindsym $mod+Shift+q kill
+
+
 # window switch
 #bindsym $mod+Shift+w exec --no-startup-id rofi -show window
-#lock shortcut
-#bindsym $mod+z exec lock
-# start dmenu (a program launcher)
-bindsym $mod+d exec rofi -show run -lines 2 -columns 2 -width 50 -location 6
+
+# bindsym $mod+d exec rofi -show run -lines 2 -columns 2 -width 50 -location 6
 #rofi -show run -lines 3 -columns 6 -width 100 -location 2 -sidebar-mode 
-#dmenu_run
+
+#bindsym $mod+d exec --no-startup-id rofi_launch
+
+# start dmenu (a program launcher)
 # There also is the (new) i3-dmenu-desktop which only displays applications
 # shipping a .desktop file. It is a wrapper around dmenu, so you need that
 # installed.
-#bindsym $mod+d exec --no-startup-id rofi_launch
+# bindsym $mod+d exec --no-startup-id i3-dmenu-desktop
+#bindsym $mod+d exec dmenu_run
+#bindsym $mod+d exec dmenu_run -p "`date` >>>" -nb '#551a8b' -nf '#000000' -sf '#ffffff' -sb '#551a8b'
+bindsym $mod+d exec dmenu_run -p "|__--__ 🐧 __--__> " -fn 'Source Code Pro Semibold-9' -nb "#000000" -nf "#ffffff" -sb "#ffffff" -sf "#000000"
+
+
+#bindsym $mod+d exec xlunch -f 'UbuntuMono-R/11' -s 32 -a -p '>>> ' -g '/root/.config/xlunch.jpg' -F 'UbuntuMono-R/33' --scroll  --pc 000000 --tc 000000FF --hc 00000099 --bc 551a8088 -c 4 --multiple -i '/root/.config/xlunch/entries.dsv.human'
+#xlunch -f 'NotoMono-Regular/13' -s 32 -a -p '> ' -g '/root/.config/xlunch.jpg' -F 'NotoMono-Regular/30' --scroll -O
+
+
 # change focus
 bindsym $mod+j focus left
 bindsym $mod+k focus down
@@ -152,45 +195,51 @@ bindsym $mod+a focus parent
 # focus the child container
 #bindsym $mod+d focus child
 
-#set $ws1 "1"
-#set $ws2 "2:"
-#set $ws3 "3"
-#set $ws4 "4"
-#set $ws5 "5"
-#set $ws6 "6"
-#set $ws7 "7"
-#set $ws8 "8"
+# Define names for default workspaces for which we configure key bindings later on.
+# We use variables to avoid repeating the names in multiple places.
+set $ws1 "1"
+set $ws2 "2"
+set $ws3 "3"
+set $ws4 "4"
+set $ws5 "5"
+set $ws6 "6"
+set $ws7 "7"
+set $ws8 "8"
+set $ws9 "9"
+set $ws10 "10"
 
 # switch to workspace
-bindsym $mod+1 workspace 1
-bindsym $mod+2 workspace 2
-bindsym $mod+3 workspace 3
-bindsym $mod+4 workspace 4
-bindsym $mod+5 workspace 5
-bindsym $mod+6 workspace 6
-bindsym $mod+7 workspace 7
-bindsym $mod+8 workspace 8
-bindsym $mod+9 workspace 9
-bindsym $mod+0 workspace 10
+bindsym $mod+1 workspace number $ws1
+bindsym $mod+2 workspace number $ws2
+bindsym $mod+3 workspace number $ws3
+bindsym $mod+4 workspace number $ws4
+bindsym $mod+5 workspace number $ws5
+bindsym $mod+6 workspace number $ws6
+bindsym $mod+7 workspace number $ws7
+bindsym $mod+8 workspace number $ws8
+bindsym $mod+9 workspace number $ws9
+bindsym $mod+0 workspace number $ws10
 
 # move focused container to workspace
-bindsym $mod+Shift+1 move container to workspace 1
-bindsym $mod+Shift+2 move container to workspace 2
-bindsym $mod+Shift+3 move container to workspace 3
-bindsym $mod+Shift+4 move container to workspace 4
-bindsym $mod+Shift+5 move container to workspace 5
-bindsym $mod+Shift+6 move container to workspace 6
-bindsym $mod+Shift+7 move container to workspace 7
-bindsym $mod+Shift+8 move container to workspace 8
-bindsym $mod+Shift+9 move container to workspace 9
-bindsym $mod+Shift+0 move container to workspace 10
+bindsym $mod+Shift+1 move container to workspace number $ws1
+bindsym $mod+Shift+2 move container to workspace number $ws2
+bindsym $mod+Shift+3 move container to workspace number $ws3
+bindsym $mod+Shift+4 move container to workspace number $ws4
+bindsym $mod+Shift+5 move container to workspace number $ws5
+bindsym $mod+Shift+6 move container to workspace number $ws6
+bindsym $mod+Shift+7 move container to workspace number $ws7
+bindsym $mod+Shift+8 move container to workspace number $ws8
+bindsym $mod+Shift+9 move container to workspace number $ws9
+bindsym $mod+Shift+0 move container to workspace number $ws10
 
 # reload the configuration file
 bindsym $mod+Shift+c reload
 # restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
 bindsym $mod+Shift+r restart
 # exit i3 (logs you out of your X session)
+#bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -B 'Yes, exit i3' 'i3-msg exit'"
 bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'Do you really want to exit i3?' -b 'Yes, exit i3' 'i3-msg exit'"
+
 
 # resize window (you can also use the mouse for that)
 mode "resize" {
@@ -211,17 +260,16 @@ mode "resize" {
         bindsym Up resize shrink height 10 px or 10 ppt
         bindsym Right resize grow width 10 px or 10 ppt
 
-        # back to normal: Enter or Escape
+        # back to normal: Enter or Escape or $mod+r
         bindsym Return mode "default"
         bindsym Escape mode "default"
+        bindsym $mod+r mode "default"
 }
 
-
 bindsym $mod+r mode "resize"
-##
-# system
-##
-#set $mode_system    [L]OCK        LOG[O]UT        [S]USPEND        [R]EBOOT        [P]OWEROFF
+
+
+#set $mode_system   [L]OCK       LOG[O]UT       [S]USPEND       [R]EBOOT       [P]OWEROFF
 #bindsym Ctrl+$alt+Delete mode "$mode_system"
 #mode "$mode_system" {
 #    bindsym l exec $psst ~/.i3/i3exit.sh lock, mode "default"
@@ -234,127 +282,220 @@ bindsym $mod+r mode "resize"
 #    bindsym Return mode "default"
 #    bindsym Escape mode "default"
 #}
+
+
+#bindsym $mod+Delete exec "i3-nagbar -m '"B!+cHp|Z"' -t error -b 'Lock' 'i3lock' -b 'Suspend' 'systemctl suspend' -b 'Restart' 'reboot' -b 'Shutdown' 'poweroff'"
+#set $mode_system System (l) lock, (e) logout, (s) suspend, (h) hibernate, (r) reboot, (Shift+s) shutdown
+set $mode_system   (e) logout,  (q) suspend,  (r) reboot,  (s) shutdown
+mode "$mode_system" {
+#    bindsym l exec bash /root/.config/i3/locky.sh, mode "default"
+    bindsym e exec --no-startup-id i3-msg exit, mode "default"
+    bindsym q exec --no-startup-id systemctl suspend, mode "default"
+#   bindsym h exec --no-startup-id $Locker && systemctl hibernate, mode "default"
+    bindsym r exec --no-startup-id systemctl reboot, mode "default"
+    bindsym s exec --no-startup-id systemctl poweroff -i, mode "default"
+
+    # Back to normal: Enter or Escape
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
+}
+
+bindsym $mod+Delete mode "$mode_system"
+
+
+#set $mode_system       mode
+#[P]CMANFM [F]IREFOX [G]PICVIEW [S]UBLIME
+#bindsym $mod+d mode "$mode_system"
+#mode "$mode_system" {
+#    bindsym p exec $psst pcmanfm, mode "default"
+#    bindsym g exec $psst genymotion, mode "default"
+#    bindsym v exec $psst vmware, mode "default"
+#    bindsym f exec $psst firefox-developer-edition, mode "default"
+#    bindsym g exec $psst gpicview, mode "default"
+#    bindsym s exec $psst subl3, mode "default"
+    # back to normal: Enter or Escape
+#    bindsym Return mode "default"
+#    bindsym Escape mode "default"
+#}
+
+
+#set $mode_favi [F]iles  [B]rowser  [D]ocuments  [I]mages  [V]mware  [G]enymotion  [L]ibreoffice  [E]ditor  [T]orrent  [U]get
+#set $mode_favi [G]oogle Chrome   [T]ermite   [V]mware   [I]mages   [F]iles   [A]ppearance
+#bindsym Mod1+d mode "$mode_favi"
+#mode "$mode_favi" {
+#    bindsym g exec google-chrome-stable
+#    bindsym d exec epdfview
+#    bindsym i exec gpicview
+#    bindsym v exec vmware
+#    bindsym a exec lxappearance
+#   bindsym g exec genymotion
+#   bindsym l exec libreoffice
+#    bindsym f exec pcmanfm
+#   bindsym e exec gvim
+#   bindsym t exec transmission-gtk
+#   bindsym u exec uget-gtk 
+#    bindsym t exec termite
+#    bindsym Escape mode "default"
+#    bindsym Return mode "default"
+#}
+
+
+
+# Start i3bar to display a workspace bar (plus the system information i3status
 # finds out, if available)
-#bar {
-#  status_command i3status
-# colors {
+bar {
+
+#	font pango: xos4 Terminess Powerline, Icon 9
+#	font pango:Andale Mono 8
+#	font pango:Inconsolata 10
+
+	status_command i3blocks
+#	status_command i3status
+
+#colors {
 #    separator #666666
 #    background #000000
 #    statusline #ffffff
 #    focused_workspace #551a8b #551a8b #ffffff
 #    active_workspace #333333 #5f676a #ffffff
-#    inactive_workspace #000000 #000000 #888888
+#    inactive_workspace #000000 #000000 #551a8b
 #    urgent_workspace #2f343a #900000 #ffffff
 #  }
-#}
-#bar {
-#        #status_command i3status
-#
+
+    colors {
+        background              $bar
+        separator               $seperator
+        statusline              $statusline
+        active_workspace        $bg $bg $text
+        focused_workspace       $bg-urgent $bg $text
+        inactive_workspace      $seperator $seperator $text
+        urgent_workspace        $bg-urgent $bg-urgent $text
+    }
+
+
+# colors {
+#    separator #ffffff
+#    background #000000
+#    statusline #ffffff
+#    focused_workspace #ff0000 #000000 #ff0000
+#    active_workspace #333333 #5f676a #ffffff
+#    inactive_workspace #00ff00 #000000 #00ff00
+#    urgent_workspace #2f343a #900000 #ffffff
+#  }
+
 #        i3bar_command /usr/bin/i3bar
 #        status_command exec $scripts/i3barconky
-#
-#        font pango: xos4 Terminess Powerline, Icon 9
-#        position bottom
-#        colors {
-#            background          "#242C33"
-#            statusline          "#ecedee"
-#            separator           "#242c33"
-#            focused_workspace   "#242c33" "#C64742" "#CACACA"
-#            active_workspace    "#242c33" "#242c33" "#797979"
-#            inactive_workspace  "#242c33" "#242c33" "#CACACA"
-#            urgent_workspace    "#242c33" "#242c33" "#ff9d17" #"#f3ea0c"
+
+#        separator_symbol " "
+
+        position bottom
+
+#colors {
+#       background          "#000000"
+#        statusline          "#ecedee"
+#        separator           "#242c33"
+#        focused_workspace   "#242c33" "#C64742" "#CACACA"
+#        active_workspace    "#242c33" "#242c33" "#797979"
+#        inactive_workspace  "#242c33" "#242c33" "#CACACA"
+#        urgent_workspace    "#242c33" "#242c33" "#ff9d17" #"#f3ea0c"
 #        }
-#}
-#bar {
-#	font pango:Inconsolata 10
-#	position bottom
-#	tray_output none
-#	status_command ~/Git/bumblebee-status/bumblebee-status -m nic disk:home disk:root cpu memory battery pasink pasource -p home.path=/home/the-rebel root.path=/ disk.left-click="nautilus {instance}" -t solarized-powerline
-#}
-# Basic changes that need to be made in order to get i3wm configuration
 
-#############################
-### settings for i3-gaps: ###
-#############################
+       tray_output none
+#       status_command ~/Git/bumblebee-status/bumblebee-status -m nic disk:home disk:root cpu memory battery pasink pasource -p home.path=/home/the-rebel root.path=/ disk.left-click="nautilus {instance}" -t solarized-powerline
 
-# Set inner/outer gaps
-#gaps inner 11
-#gaps outer 11
 
-# Additionally, you can issue commands with the following syntax. This is useful to bind keys to changing the gap size.
-# gaps inner|outer current|all set|plus|minus <px>
-# gaps inner all set 10
-# gaps outer all plus 5
+}
 
-# Smart gaps (gaps used if only more than one container on the workspace)
-#smart_gaps on
-
-# Smart borders (draw borders around container only if it is not the only container on this workspace)
-# on|no_gaps (on=always activate and no_gaps=only activate if the gap size to the edge of the screen is 0)
-#smart_borders on
-
-# Press $mod+Shift+g to enter the gap mode. Choose o or i for modifying outer/inner gaps. Press one of + / - (in-/decrement for current workspace) or 0 (remove gaps for current workspace). If you also press Shift with these keys, the change will be global for all workspaces.
-#set $mode_gaps Gaps: (o) outer, (i) inner
-#set $mode_gaps_outer Outer Gaps: +|-|0 (local), Shift + +|-|0 (global)
-#set $mode_gaps_inner Inner Gaps: +|-|0 (local), Shift + +|-|0 (global)
-#bindsym $mod+Shift+g mode "$mode_gaps"
-#
-#mode "$mode_gaps" {
-#        bindsym o      mode "$mode_gaps_outer"
-#        bindsym i      mode "$mode_gaps_inner"
-#        bindsym Return mode "default"
-#        bindsym Escape mode "default"
-#}
-#mode "$mode_gaps_inner" {
-#        bindsym plus  gaps inner current plus 5
- #       bindsym minus gaps inner current minus 5
-  #      bindsym 0     gaps inner current set 0
-#
- #       bindsym Shift+plus  gaps inner all plus 5
- #       bindsym Shift+minus gaps inner all minus 5
-  #      bindsym Shift+0     gaps inner all set 0
-#
- #       bindsym Return mode "default"
-  #      bindsym Escape mode "default"
-#}
-#mode "$mode_gaps_outer" {
- #       bindsym plus  gaps outer current plus 5
-  #      bindsym minus gaps outer current minus 5
-   #     bindsym 0     gaps outer current set 0
-#
- #       bindsym Shift+plus  gaps outer all plus 5
-  #      bindsym Shift+minus gaps outer all minus 5
-   #     bindsym Shift+0     gaps outer all set 0
-#
- #       bindsym Return mode "default"
-  #      bindsym Escape mode "default"
-#}
-#
 #exec_always --no-startup-id $HOME/.config/polybar/launch.sh
-#
-#
+
 workspace_layout tabbed
 floating_minimum_size 300x200
 floating_maximum_size 1000 x 600
-new_window none
-new_float none
-hide_edge_borders both
+
+#new_window none
+#new_float none
+#hide_edge_borders both
+
+new_window pixel 1
+new_float pixel 1
+
+# Take a screenshot (Print Screen key).
+#bindsym --release Print exec --no-startup-id scrot "%Y-%m-%d_$(whoami).png' -t 10% -e 'feh -. $f"
+
+bindsym --release Print exec --no-startup-id scrot -q 1 -z '%c.png'
+
 focus_on_window_activation smart
 show_marks yes
 
+focus_follows_mouse no
+popup_during_fullscreen smart
+
 
 # class                 border  backgr. text    indicator child_border
-client.placeholder        #ffffff #000000 #ffffff #000000   #000000
-client.focused #0088CC #0088CC #ffffff #dddddd
-client.focused_inactive #333333 #333333 #888888 #292d2e
-client.unfocused #333333 #333333 #888888 #292d2e
-client.urgent #2f343a #900000 #ffffff #900000
+#client.placeholder	#ffffff #000000 #ffffff #000000   #000000
+#client.focused		#0088CC #0088CC #ffffff #dddddd
+#client.focused_inactive	#333333 #333333 #888888 #292d2e
+#client.unfocused	#333333 #333333 #888888 #292d2e
+#client.urgent		#2f343a #900000 #ffffff #900000
 
-
+bindsym --release Caps_Lock exec pkill -SIGRTMIN+11 i3blocks
+bindsym --release Num_Lock  exec pkill -SIGRTMIN+11 i3blocks
 
 for_window [window_role="^conversation$"] floating enable
 for_window [window_role="messages"] floating enable
 for_window [window_role="pop-up"] floating enable
 for_window [window_role="task_dialog"] floating enable
 for_window [class="feh|Pavucontrol|Steam"] floating enable
+for_window [class="Mega|mega|megasync"] floating enab
+
+for_window [class="feh|Keepassx|mpv|Mumble|Pavucontrol|Steam"] floating enable
+for_window [title="^Minecraft .*"] floating enable
+for_window [title="Preferences$"] floating enable
+for_window [title="Steam - Update News"] kill
+
+
+# Remove the titlebar.
+for_window [class="Chromium|Firefox"] border pixel 0
+for_window [class="mpv|URxvt"] border pixel 0
+
+
+# =============================================================================
+# Assign colors
+# =============================================================================
+
+set $bg           #204A87
+set $bg-urgent    #3465A4
+
+#set $bg            #8b2f45
+set $bg-inactive   #707070
+#set $bg-urgent     #b5294a
+set $text          #efefef
+set $text-inactive #efefef
+
+set $bar           #222222
+set $seperator     #444444
+set $statusline    #ffffff
+
+#                       border        background   text           indicator
+client.focused          $bg           $bg          $text          $bar
+client.unfocused        $bg-inactive  $bg-inactive $text-inactive $bar
+client.focused_inactive $bg-inactive  $bg-inactive $text-inactive $bar
+client.urgent           $bg-urgent    $bg-urgent   $text          $bar
+
+
+#purple one
+# class                 border  backgr. text    indicator child_border
+#client.focused          #551a8b #551a8b #efefef #000000   #551a8b
+#client.unfocused        #000000 #000000 #ffffff #000000   #000000
+#client.focused_inactive        #551a8b #000000 #ffffff #000000   #000000
+#client.placeholder        #ffffff #000000 #ffffff #000000   #000000
+#client.urgent        #000000 #551a8b #000000 #000000   #000000
+
+# class                 border  backgr. text    indicator child_border
+#client.focused          #ffffff #ffffff #000000 #000000   #ffffff
+#client.unfocused        #000000 #000000 #ffffff #000000   #000000
+#client.focused_inactive        #ffffff #000000 #ffffff #000000   #000000
+#client.placeholder        #ffffff #000000 #ffffff #000000   #000000
+#client.urgent        #000000 #ffffff #000000 #000000   #000000
+
 
